@@ -12,10 +12,10 @@ import IASDKCore
 /// Collection of banner-sepcific API implementations
 extension DigitalTurbineExchangeAdAdapter {
     /// Create an ad spot for the current banner ad request.
-    /// - Parameter placementId: The current banner placement ID.
+    /// - Parameter placement: The current banner placement ID.
     /// - Returns: An ad spot for the current banner ad request. 
-    func createBannerAdSpot(placementId: String) -> IAAdSpot? {
-        guard let adRequest = buildAdRequest(placementId: placementId) else {
+    func createBannerAdSpot(placement: String) -> IAAdSpot? {
+        guard let adRequest = buildAdRequest(placement: placement) else {
             log("Ad request is nil.")
             return nil
         }

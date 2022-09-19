@@ -12,10 +12,10 @@ import IASDKCore
 /// Collection of interstitial-sepcific API implementations
 extension DigitalTurbineExchangeAdAdapter {
     /// Create an ad spot for the current interstitial ad request.
-    /// - Parameter placementId: The current interstitial placement ID.
+    /// - Parameter placement: The current interstitial placement ID.
     /// - Returns: An ad spot for the current interstitial ad request.
-    func createFullscreenAdSpot(placementId: String) -> IAAdSpot? {
-        guard let adRequest = buildAdRequest(placementId: placementId) else {
+    func createFullscreenAdSpot(placement: String) -> IAAdSpot? {
+        guard let adRequest = buildAdRequest(placement: placement) else {
             log("Ad request is nil.")
             return nil
         }
@@ -50,11 +50,10 @@ extension DigitalTurbineExchangeAdAdapter {
     /// Attempt to show the currently loaded fullscreen ad.
     func showFullscreenAd() {
         if let ad = partnerAd.ad as? IAFullscreenUnitController {
-            ad.showAd(animated: true) {
-                self.showCompletion?(.success(self.partnerAd))
-            }
+            /// A show result will be reported from the `IAUnitControllerDidPresentFullscreen(unitController: IAUnitController)` callback.
+            ad.showAd(animated: true, completion: nil)
         } else {
-            showCompletion?(.failure(error(.showFailure(partnerAd), description: "Ad instance is nil/not an IAFullscreenUnitController.")))
+            showCompletion?(.failure(error(.showFailure(partnerAd), description: "Ad instance is nil/not an IAFullscreenUnitController."))) ?? self.log(.showResultIgnored)
         }
         
         showCompletion = nil

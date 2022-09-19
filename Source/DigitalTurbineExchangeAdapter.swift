@@ -43,8 +43,8 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     func setUp(with configuration: PartnerConfiguration, completion: @escaping (Error?) -> Void) {
         log(.setUpStarted)
         
-        guard let appId = configuration.credentials[appIdKey], !appId.isEmpty else {
-            let error = self.error(.setUpFailure, description: "App ID is null or empty.")
+        guard let appId = configuration.credentials[appIdKey] as? String, !appId.isEmpty else {
+            let error = self.error(.missingSetUpParameter(key: appIdKey))
             self.log(.setUpFailed(error))
             
             completion(error)

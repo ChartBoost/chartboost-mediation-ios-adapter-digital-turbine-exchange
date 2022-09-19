@@ -24,7 +24,7 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     weak var partnerAdDelegate: PartnerAdDelegate?
     
     /// The current ViewController for ad presentation purposes.
-    var viewController: UIViewController
+    weak var viewController: UIViewController?
     
     /// The completion handler to notify Helium of ad show completion result.
     var showCompletion: ((Result<PartnerAd, Error>) -> Void)?
@@ -58,16 +58,26 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     /// - Parameters:
     ///   - completion: The completion handler to notify Helium of ad load completion result.
     func load(completion: @escaping (Result<PartnerAd, Error>) -> Void) {
-        guard let adSpot = request.format == .banner ? createBannerAdSpot(placementId: request.partnerPlacement) : createFullscreenAdSpot(placementId: request.partnerPlacement) else {
-            completion(.failure(self.error(.loadFailure(request), description: "Ad spot is nil.")))
-            
-            return
-        }
-        
-        partnerAd = PartnerAd(ad: request.format == .banner ? viewUnitController : fullscreenUnitController, details: [:], request: request)
+        guard let adSpot = request.format == .banner
+                ? createBannerAdSpot(placement: request.partnerPlacement)
+                : createFullscreenAdSpot(placement: request.partnerPlacement) else {
+                    let error = self.error(.loadFailure(request), description: "Ad spot is nil.")
+                    
+                    log(.loadFailed(request, error: error))
+                    completion(.failure(error))
+                    
+                    return
+                }
+                
+        let ad = request.format == .banner ? viewUnitController : fullscreenUnitController
+        partnerAd = PartnerAd(ad: ad, details: [:], request: request)
         
         adSpot.fetchAd(completion: { adSpot, adModel, error in
-            completion(error == nil ? .success(self.partnerAd) : .failure(self.error(.loadFailure(self.request), error: error)))
+            let succeeded = error == nil
+            let error = self.error(.loadFailure(self.request), error: error)
+            
+            self.log(succeeded ? .loadSucceeded(self.partnerAd) : .loadFailed(self.request, error: error))
+            completion(succeeded ? .success(self.partnerAd) : .failure(error))
         })
     }
     
@@ -102,12 +112,12 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     }
     
     /// Build a partner ad request.
-    /// - Parameter placementId: The placement ID for the ad request.
+    /// - Parameter placement: The placement ID for the ad request.
     /// - Returns: A partner ad request for the current Helium ad load.
-    func buildAdRequest(placementId: String) -> IAAdRequest? {
-        return IAAdRequest.build { builder in
+    func buildAdRequest(placement: String) -> IAAdRequest? {
+        IAAdRequest.build { builder in
             builder.useSecureConnections = false
-            builder.spotID = placementId
+            builder.spotID = placement
             builder.timeout = 30
         }
     }
@@ -115,7 +125,7 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     /// Build an MRAID content controller.
     /// - Returns: An MRAID content controller for the current Helium ad load.
     func buildMraidContentController() -> IAMRAIDContentController? {
-        return IAMRAIDContentController.build { builder in
+        IAMRAIDContentController.build { builder in
             builder.mraidContentDelegate = self
         }
     }
@@ -123,7 +133,7 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     /// Build a video unit controller.
     /// - Returns: A video unit controller for the current Helium ad load.
     func buildViewUnitController() -> IAViewUnitController? {
-        return IAViewUnitController.build { builder in
+        IAViewUnitController.build { builder in
             builder.unitDelegate = self
             builder.addSupportedContentController(self.mraidContentController)
         }
@@ -132,7 +142,7 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     /// Build a video content controller.
     /// - Returns: A video content controller for the current Helium ad load.
     func buildVideoContentController() -> IAVideoContentController? {
-        return IAVideoContentController.build { builder in
+        IAVideoContentController.build { builder in
             builder.videoContentDelegate = self
         }
     }
@@ -140,7 +150,7 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     /// Build a fullscreen unit controller.
     /// - Returns: A fullscreen unit controller for the current Helium ad load.
     func buildFullscreenUnitController() -> IAFullscreenUnitController? {
-        return IAFullscreenUnitController.build { builder in
+        IAFullscreenUnitController.build { builder in
             builder.unitDelegate = self
             builder.addSupportedContentController(self.videoContentController)
             builder.addSupportedContentController(self.mraidContentController)
@@ -150,7 +160,9 @@ final class DigitalTurbineExchangeAdAdapter: NSObject, PartnerLogger, PartnerErr
     // MARK: - IAUnitDelegate
     
     func iaParentViewController(for unitController: IAUnitController?) -> UIViewController {
-        return self.viewController
+        if let viewController = viewController {
+            return viewController
+        }
     }
     
     private func IAAdDidReceiveClick(unitController: IAUnitController) {
