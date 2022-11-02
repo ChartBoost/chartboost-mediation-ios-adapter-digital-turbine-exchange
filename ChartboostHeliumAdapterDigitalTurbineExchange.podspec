@@ -24,4 +24,7 @@ Pod::Spec.new do |spec|
 
   # Partner network SDK and version that this adapter is certified to work with.
   spec.dependency 'Fyber_Marketplace_SDK', '8.1.5'
+
+  # The partner network SDK is a static framework which requires the static_framework option.
+  spec.static_framework = true
 end
