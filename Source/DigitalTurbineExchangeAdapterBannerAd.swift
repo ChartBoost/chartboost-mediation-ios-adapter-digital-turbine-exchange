@@ -9,7 +9,8 @@ import Foundation
 import IASDKCore
 import HeliumSdk
 
-final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAMRAIDContentDelegate, IAUnitDelegate {
+/// The Helium Digital Turbine Exchange adapter banner ad.
+final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAMRAIDContentDelegate {
     /// The partner ad view to display inline. E.g. a banner view.
     /// Should be nil for full-screen ads.
     var inlineView: UIView? { viewUnitController?.adView }
@@ -40,16 +41,16 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
             builder.addSupportedContentController(self.mraidContentController!)
         })
         
-        adSpot = IAAdSpot.build({ (builder:IAAdSpotBuilder) in
-            guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
-                let error = self.error(.loadFailure, description: "Ad request is nil.")
-                
-                self.log(.loadFailed(error))
-                completion(.failure(error))
-                
-                return
-            }
+        guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
+            let error = self.error(.loadFailure, description: "Ad request is nil.")
             
+            self.log(.loadFailed(error))
+            completion(.failure(error))
+            
+            return
+        }
+        
+        adSpot = IAAdSpot.build({ (builder:IAAdSpotBuilder) in
             builder.adRequest = adRequest
             builder.addSupportedUnitController(self.viewUnitController!)
         })
@@ -84,24 +85,6 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
     
     // MARK: - IAUnitDelegate
     
-    internal func iaParentViewController(for unitController: IAUnitController?) -> UIViewController {
-        if let viewController = self.viewController {
-            return viewController
-        } else {
-            if var topController = UIApplication.shared.keyWindow?.rootViewController {
-                while let presentedViewController = topController.presentedViewController {
-                    topController = presentedViewController
-                }
-                
-                return topController
-            }
-            
-            /// A valid ViewController should already be obtained when load is attempted.
-            /// We should never get here—and if we do, something is seriously wrong that should result in a crash.
-            fatalError()
-        }
-    }
-    
     func iaAdDidReceiveClick(_ unitController: IAUnitController?) {
         log(.didClick(error: nil))
         delegate?.didClick(self, details: [:]) ?? log(.delegateUnavailable)
@@ -111,29 +94,25 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
         log(.didTrackImpression)
         delegate?.didTrackImpression(self, details: [:]) ?? log(.delegateUnavailable)
     }
-    
-    func iaAdDidReward(_ unitController: IAUnitController?) {
-        /// NO-OP
-    }
-    
+        
     func iaUnitControllerWillPresentFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillPresentFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerDidPresentFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("iaUnitControllerDidPresentFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerWillDismissFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillDismissFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerDidDismissFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("iaUnitControllerDidDismissFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerWillOpenExternalApp(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillOpenExternalApp"))
+        log(.delegateCallIgnored)
     }
     
     func iaAdDidExpire(_ unitController: IAUnitController?) {
@@ -160,11 +139,11 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
     }
     
     func iamraidContentControllerMRAIDAdWillCollapse(_ contentController: IAMRAIDContentController?) {
-        log(.custom("IAMRAIDContentControllerMRAIDAdWillCollapse"))
+        log(.delegateCallIgnored)
     }
     
     func iamraidContentControllerMRAIDAdDidCollapse(_ contentController: IAMRAIDContentController?) {
-        log(.custom("IAMRAIDContentControllerMRAIDAdDidCollapse"))
+        log(.delegateCallIgnored)
     }
     
     func iamraidContentController(_ contentController: IAMRAIDContentController?, videoInterruptedWithError error: Error) {

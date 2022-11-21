@@ -10,7 +10,7 @@ import HeliumSdk
 import IASDKCore
 import UIKit
 
-/// The Helium Yahoo adapter
+/// The Helium Digital Turbine Exchange adapter
 final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// The version of the partner SDK.
     let partnerSDKVersion = IASDKCore.sharedInstance().version() ?? ""
@@ -49,7 +49,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         /// Digital Turbine Exchange's initialization needs to be done on the main thread
         DispatchQueue.main.async {
             IASDKCore.sharedInstance().initWithAppID(appId, completionBlock: { succeeded, error in
-                let error = self.error(.setUpFailure, description: error?.localizedDescription, error: error)
+                let error = self.error(.setUpFailure, error: error)
                 
                 self.log(succeeded ? .setUpSucceded : .setUpFailed(error))
                 completion(succeeded ? nil : error)
@@ -64,7 +64,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         log(.fetchBidderInfoStarted(request))
         log(.fetchBidderInfoSucceeded(request))
         
-        completion([:])
+        completion(nil)
     }
     
     /// Indicates if GDPR applies or not and the user's GDPR consent status.
@@ -72,7 +72,10 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// - parameter status: One of the `GDPRConsentStatus` values depending on the user's preference.
     func setGDPR(applies: Bool?, status: GDPRConsentStatus) {
         if (applies == true) {
-            IASDKCore.sharedInstance().gdprConsent = status == GDPRConsentStatus.granted ? .given : .denied
+            let gdprConsent: IAGDPRConsentType = status == GDPRConsentStatus.granted ? .given : .denied
+            
+            IASDKCore.sharedInstance().gdprConsent = gdprConsent
+            log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent))
         }
     }
     
@@ -87,6 +90,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// - parameter privacyString: An IAB-compliant string indicating the CCPA status.
     func setCCPA(hasGivenConsent: Bool, privacyString: String) {
         IASDKCore.sharedInstance().ccpaString = privacyString
+        log(.privacyUpdated(setting: "ccpaString", value: privacyString))
     }
     
     /// Creates a new ad object in charge of communicating with a single partner SDK ad instance.

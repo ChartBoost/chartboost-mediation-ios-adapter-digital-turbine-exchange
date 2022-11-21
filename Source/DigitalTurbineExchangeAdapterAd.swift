@@ -12,7 +12,8 @@ import UIKit
 import IASDKCore
 
 /// Base class for Helium Digital Turbine Exchange adapter ads.
-class DigitalTurbineExchangeAdapterAd: NSObject {
+class DigitalTurbineExchangeAdapterAd: NSObject, IAUnitDelegate {
+    
     /// The partner adapter that created this ad.
     let adapter: PartnerAdapter
     
@@ -27,9 +28,6 @@ class DigitalTurbineExchangeAdapterAd: NSObject {
     /// It should be the one provided on `PartnerAdapter.makeAd(request:delegate:)`.
     weak var delegate: PartnerAdDelegate?
     
-    /// The completion handler to notify Helium of ad load completion result.
-    var loadCompletion: ((Result<PartnerEventDetails, Error>) -> Void)?
-    
     /// The completion handler to notify Helium of ad show completion result.
     var showCompletion: ((Result<PartnerEventDetails, Error>) -> Void)?
     
@@ -42,5 +40,21 @@ class DigitalTurbineExchangeAdapterAd: NSObject {
         self.adapter = adapter
         self.request = request
         self.delegate = delegate
+    }
+    
+    func iaParentViewController(for unitController: IAUnitController?) -> UIViewController {
+        if let viewController = self.viewController {
+            return viewController
+        } else {
+            if var topController = UIApplication.shared.keyWindow?.rootViewController {
+                while let presentedViewController = topController.presentedViewController {
+                    topController = presentedViewController
+                }
+                
+                return topController
+            }
+            
+            return UIViewController()
+        }
     }
 }

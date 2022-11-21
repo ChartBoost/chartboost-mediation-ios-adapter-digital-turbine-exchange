@@ -8,8 +8,10 @@
 import Foundation
 import IASDKCore
 import HeliumSdk
+import UIKit
 
-final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAVideoContentDelegate, IAUnitDelegate, IAMRAIDContentDelegate {
+/// The Helium Digital Turbine Exchange adapter interstitial ad.
+final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAVideoContentDelegate, IAMRAIDContentDelegate {
     /// The partner ad view to display inline. E.g. a banner view.
     /// Should be nil for full-screen ads.
     internal var inlineView: UIView? { nil }
@@ -54,16 +56,16 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
             builder.addSupportedContentController(self.videoContentController!)
         })
         
-        adSpot = IAAdSpot.build({ (builder:IAAdSpotBuilder) in
-            guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
-                let error = self.error(.loadFailure, description: "Ad request is nil.")
-                
-                self.log(.loadFailed(error))
-                completion(.failure(error))
-                
-                return
-            }
+        guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
+            let error = self.error(.loadFailure, description: "Ad request is nil.")
             
+            self.log(.loadFailed(error))
+            completion(.failure(error))
+            
+            return
+        }
+
+        adSpot = IAAdSpot.build({ (builder:IAAdSpotBuilder) in
             builder.adRequest = adRequest
             builder.addSupportedUnitController(self.fullscreenUnitController!)
             builder.addSupportedUnitController(self.viewUnitController!)
@@ -89,7 +91,6 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
         showCompletion = completion
         
         if let ad = fullscreenUnitController {
-            /// A show result will be reported from the `IAUnitControllerDidPresentFullscreen(unitController: IAUnitController)` callback.
             ad.showAd(animated: true)
         } else {
             let error = error(.noAdReadyToShow)
@@ -112,27 +113,6 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
     
     // MARK: - IAUnitDelegate
     
-    internal func iaParentViewController(for unitController: IAUnitController?) -> UIViewController {
-        if let viewController = self.viewController {
-            return viewController
-        } else {
-            if var topController = UIApplication.shared.keyWindow?.rootViewController {
-                while let presentedViewController = topController.presentedViewController {
-                    topController = presentedViewController
-                }
-                
-                return topController
-            }
-            
-            log(.showFailed(error(.noViewController)))
-            showCompletion?(.failure(error(.noViewController)))
-            
-            /// A valid ViewController should already be obtained when show is attempted.
-            /// We should never get here—and if we do, something is seriously wrong that should result in a crash.
-            fatalError()
-        }
-    }
-    
     func iaAdDidReceiveClick(_ unitController: IAUnitController?) {
         log(.didClick(error: nil))
         delegate?.didClick(self, details: [:]) ?? log(.delegateUnavailable)
@@ -151,7 +131,7 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
     }
     
     func iaUnitControllerWillPresentFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillPresentFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerDidPresentFullscreen(_ unitController: IAUnitController?) {
@@ -161,7 +141,7 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
     }
     
     func iaUnitControllerWillDismissFullscreen(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillDismissFullscreen"))
+        log(.delegateCallIgnored)
     }
     
     func iaUnitControllerDidDismissFullscreen(_ unitController: IAUnitController?) {
@@ -170,7 +150,7 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
     }
     
     func iaUnitControllerWillOpenExternalApp(_ unitController: IAUnitController?) {
-        log(.custom("IAUnitControllerWillOpenExternalApp"))
+        log(.delegateCallIgnored)
     }
     
     func iaAdDidExpire(_ unitController: IAUnitController?) {
