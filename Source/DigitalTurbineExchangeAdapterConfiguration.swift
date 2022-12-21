@@ -9,12 +9,13 @@ import Foundation
 import IASDKCore
 
 /// A list of externally configurable properties pertaining to the partner SDK that can be retrieved and set by publishers.
-public class DigitalTurbineExchangeAdapterConfiguration {
+@objc public class DigitalTurbineExchangeAdapterConfiguration: NSObject {
+    
     /// Flag that can optionally be set to change the log level of the Digital Turbine Exchange SDK.
-    public static var logLevel: IALogLevel = .info {
+    @objc public static var logLevel: IALogLevel = .info {
         didSet {
             IALogger.setLogLevel(logLevel)
-            print("The Digital Turbine Exchange SDK's log level has been set to \(logLevel).")
+            print("Digital Turbine Exchange SDK log level set to \(logLevel)")
         }
     }
 }
