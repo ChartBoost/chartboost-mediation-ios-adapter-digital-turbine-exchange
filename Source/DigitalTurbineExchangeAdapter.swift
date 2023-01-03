@@ -39,7 +39,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         log(.setUpStarted)
         
         guard let appId = configuration.credentials[String.appIdKey] as? String, !appId.isEmpty else {
-            let error = self.error(.missingSetUpParameter(key: String.appIdKey))
+            let error = self.error(.initializationFailureInvalidCredentials, description: "Missing \(String.appIdKey)")
             self.log(.setUpFailed(error))
             
             completion(error)
@@ -49,7 +49,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         /// Digital Turbine Exchange's initialization needs to be done on the main thread
         DispatchQueue.main.async {
             IASDKCore.sharedInstance().initWithAppID(appId, completionBlock: { succeeded, error in
-                let error = self.error(.setUpFailure, error: error)
+                let error = self.error(.initializationFailureUnknown, error: error)
                 
                 self.log(succeeded ? .setUpSucceded : .setUpFailed(error))
                 completion(succeeded ? nil : error)
@@ -107,7 +107,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         case .banner:
             return DigitalTurbineExchangeAdapterBannerAd(adapter: self, request: request, delegate: delegate)
         @unknown default:
-            throw error(.adFormatNotSupported(request))
+            throw error(.loadFailureUnsupportedAdFormat)
         }
     }
 }

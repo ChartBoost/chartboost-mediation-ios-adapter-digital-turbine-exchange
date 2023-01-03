@@ -42,7 +42,7 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
         })
         
         guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
-            let error = self.error(.loadFailure, description: "Ad request is nil.")
+            let error = self.error(.loadFailureInvalidAdRequest, description: "Ad request is nil.")
             
             self.log(.loadFailed(error))
             completion(.failure(error))
@@ -57,7 +57,7 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
         
         adSpot?.fetchAd(completion: { (adSpot:IAAdSpot?, adModel:IAAdModel?, error:Error?) in
             let succeeded = error == nil
-            let error = self.error(.loadFailure, error: error)
+            let error = self.error(.loadFailureUnknown, error: error)
             
             self.log(succeeded ? .loadSucceeded : .loadFailed(error))
             completion(succeeded ? .success([:]) : .failure(error))
