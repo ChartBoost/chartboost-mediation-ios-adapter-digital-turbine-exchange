@@ -73,7 +73,7 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
         
         adSpot?.fetchAd(completion: { (adSpot:IAAdSpot?, adModel:IAAdModel?, error:Error?) in
             let succeeded = error == nil
-            let error = self.error(.loadFailureException, error: error)
+            let error = self.error(.loadFailureUnknown, error: error)
             
             self.log(succeeded ? .loadSucceeded : .loadFailed(error))
             completion(succeeded ? .success([:]) : .failure(error))
