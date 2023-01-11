@@ -49,10 +49,19 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         /// Digital Turbine Exchange's initialization needs to be done on the main thread
         DispatchQueue.main.async {
             IASDKCore.sharedInstance().initWithAppID(appId, completionBlock: { succeeded, error in
-                let error = self.error(.initializationFailureUnknown, error: error)
-                
-                self.log(succeeded ? .setUpSucceded : .setUpFailed(error))
-                completion(succeeded ? nil : error)
+                if let error = error {
+                    self.log(.setUpFailed(error))
+                    completion(error)
+                }
+                else if !succeeded {
+                    let error = self.error(.initializationFailureUnknown)
+                    self.log(.setUpFailed(error))
+                    completion(error)
+                }
+                else {
+                    self.log(.setUpSucceded)
+                    completion(nil)
+                }
             }, completionQueue: nil)
         }
     }
