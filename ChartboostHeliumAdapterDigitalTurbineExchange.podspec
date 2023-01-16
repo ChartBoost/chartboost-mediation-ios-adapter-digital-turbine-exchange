@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name        = 'ChartboostHeliumAdapterDigitalTurbineExchange'
-  spec.version     = '4.8.1.5.0'
+  spec.version     = '4.8.1.7.0'
   spec.license     = { :type => 'MIT', :file => 'LICENSE.md' }
   spec.homepage    = 'https://github.com/ChartBoost/helium-ios-adapter-digital-turbine-exchange'
   spec.authors     = { 'Chartboost' => 'https://www.chartboost.com/' }
@@ -23,7 +23,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'ChartboostHelium', '~> 4.0'
 
   # Partner network SDK and version that this adapter is certified to work with.
-  spec.dependency 'Fyber_Marketplace_SDK', '8.1.5'
+  spec.dependency 'Fyber_Marketplace_SDK', '8.1.7'
 
   # The partner network SDK is a static framework which requires the static_framework option.
   spec.static_framework = true
