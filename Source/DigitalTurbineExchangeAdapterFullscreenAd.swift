@@ -10,9 +10,9 @@
 //  Created by Vu Chau on 9/13/22.
 //
 
+import ChartboostMediationSDK
 import Foundation
 import IASDKCore
-import HeliumSdk
 import UIKit
 
 /// The Helium Digital Turbine Exchange adapter interstitial ad.
