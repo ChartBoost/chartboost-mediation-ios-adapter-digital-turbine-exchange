@@ -1,6 +1,6 @@
 # Chartboost Mediation Digital Turbine Exchange Adapter
 
-The Chartboost Mediation Digital Turbine Exchange adapter mediates the Digital Turbine Exchange SDK into the Chartboost Mediation SDK.
+The Chartboost Mediation Digital Turbine Exchange adapter mediates Digital Turbine Exchange via the Chartboost Mediation SDK.
 
 ## Minimum Requirements
 
