@@ -5,7 +5,7 @@
 
 //
 //  DigitalTurbineExchangeAdapterBannerAd.swift
-//  ChartboostHeliumAdapterDigitalTurbineExchange
+//  ChartboostMediationAdapterDigitalTurbineExchange
 //
 //  Created by Vu Chau on 9/13/22.
 //
@@ -14,7 +14,7 @@ import ChartboostMediationSDK
 import Foundation
 import IASDKCore
 
-/// The Helium Digital Turbine Exchange adapter banner ad.
+/// The Chartboost Mediation Digital Turbine Exchange adapter banner ad.
 final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAMRAIDContentDelegate {
     /// The partner ad view to display inline. E.g. a banner view.
     /// Should be nil for full-screen ads.
@@ -82,7 +82,7 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
     
     /// Build a partner ad request.
     /// - Parameter placement: The placement ID for the ad request.
-    /// - Returns: A partner ad request for the current Helium ad load.
+    /// - Returns: A partner ad request for the current Chartboost Mediation ad load.
     func buildAdRequest(placement: String) -> IAAdRequest? {
         IAAdRequest.build { builder in
             builder.useSecureConnections = false

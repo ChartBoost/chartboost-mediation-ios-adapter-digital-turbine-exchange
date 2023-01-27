@@ -6,7 +6,7 @@
 
 //
 //  DigitalTurbineExchangeAdapterAd.swift
-//  ChartboostHeliumAdapterDigitalTurbineExchange
+//  ChartboostMediationAdapterDigitalTurbineExchange
 //
 //  Created by Vu Chau on 9/13/22.
 //
@@ -16,7 +16,7 @@ import Foundation
 import IASDKCore
 import UIKit
 
-/// Base class for Helium Digital Turbine Exchange adapter ads.
+/// Base class for Chartboost Mediation Digital Turbine Exchange adapter ads.
 class DigitalTurbineExchangeAdapterAd: NSObject, IAUnitDelegate {
     
     /// The partner adapter that created this ad.
@@ -33,14 +33,14 @@ class DigitalTurbineExchangeAdapterAd: NSObject, IAUnitDelegate {
     /// It should be the one provided on `PartnerAdapter.makeAd(request:delegate:)`.
     weak var delegate: PartnerAdDelegate?
     
-    /// The completion handler to notify Helium of ad show completion result.
+    /// The completion handler to notify Chartboost Mediation of ad show completion result.
     var showCompletion: ((Result<PartnerEventDetails, Error>) -> Void)?
     
     /// Create a new instance of the adapter.
     /// - Parameters:
     ///   - adapter: The current adapter instance
     ///   - request: The current AdLoadRequest containing data relevant to the curent ad request
-    ///   - partnerAdDelegate: The partner ad delegate to notify Helium of ad lifecycle events.
+    ///   - partnerAdDelegate: The partner ad delegate to notify Chartboost Mediation of ad lifecycle events.
     init(adapter: PartnerAdapter, request: PartnerAdLoadRequest, delegate: PartnerAdDelegate) {
         self.adapter = adapter
         self.request = request
