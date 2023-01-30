@@ -42,24 +42,24 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
     func load(with viewController: UIViewController?, completion: @escaping (Result<PartnerEventDetails, Error>) -> Void) {
         log(.loadStarted)
         
-        videoContentController = IAVideoContentController.build({ builder in
+        videoContentController = IAVideoContentController.build { builder in
             builder.videoContentDelegate = self
-        })
+        }
         
-        mraidContentController = IAMRAIDContentController.build({ builder in
+        mraidContentController = IAMRAIDContentController.build { builder in
             builder.mraidContentDelegate = self
-        })
+        }
         
-        viewUnitController = IAViewUnitController.build({ builder in
+        viewUnitController = IAViewUnitController.build { builder in
             builder.unitDelegate = self
             builder.addSupportedContentController(self.mraidContentController!)
-        })
+        }
         
-        fullscreenUnitController = IAFullscreenUnitController.build({ builder in
+        fullscreenUnitController = IAFullscreenUnitController.build { builder in
             builder.unitDelegate = self
             builder.addSupportedContentController(self.mraidContentController!)
             builder.addSupportedContentController(self.videoContentController!)
-        })
+        }
         
         guard let adRequest = self.buildAdRequest(placement: self.request.partnerPlacement) else {
             let error = self.error(.loadFailureInvalidAdRequest, description: "Ad request is nil.")
@@ -70,22 +70,21 @@ final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAda
             return
         }
 
-        adSpot = IAAdSpot.build({ (builder:IAAdSpotBuilder) in
+        adSpot = IAAdSpot.build { builder in
             builder.adRequest = adRequest
             builder.addSupportedUnitController(self.fullscreenUnitController!)
             builder.addSupportedUnitController(self.viewUnitController!)
-        })
+        }
         
-        adSpot?.fetchAd(completion: { (adSpot:IAAdSpot?, adModel:IAAdModel?, error:Error?) in
+        adSpot?.fetchAd { [weak self] adSpot, adModel, error in
             if let error = error {
-                self.log(.loadFailed(error))
+                self?.log(.loadFailed(error))
                 completion(.failure(error))
-            }
-            else {
-                self.log(.loadSucceeded)
+            } else {
+                self?.log(.loadSucceeded)
                 completion(.success([:]))
             }
-        })
+        }
     }
     
     /// Shows a loaded ad.
