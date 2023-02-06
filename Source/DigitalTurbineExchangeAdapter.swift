@@ -117,6 +117,32 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
             throw error(.loadFailureUnsupportedAdFormat)
         }
     }
+    
+    /// Maps a partner setup error to a Helium error code.
+    /// Helium SDK calls this method when a setup completion is called with a partner error.
+    ///
+    /// A default implementation is provided that returns `nil`.
+    /// Only implement if the partner SDK provides its own list of error codes that can be mapped to Helium's.
+    /// If some case cannot be mapped return `nil` to let Helium choose a default error code.
+    func mapSetUpError(_ error: Error) -> HeliumError.Code? {
+        guard let code = IASDKCoreInitErrorType(rawValue: (error as NSError).code) else {
+            return nil
+        }
+        switch code {
+        case .unknown:
+            return .initializationFailureUnknown
+        case .failedToDownloadMandatoryData:
+            return .initializationFailureNetworkingError
+        case .missingModules:
+            return .initializationFailurePartnerNotIntegrated
+        case .invalidAppID:
+            return .initializationFailureInvalidCredentials
+        case .cancelled:
+            return .initializationFailureAborted
+        @unknown default:
+            return nil
+        }
+    }
 }
 
 private extension String {
