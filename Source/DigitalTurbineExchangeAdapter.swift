@@ -124,7 +124,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// A default implementation is provided that returns `nil`.
     /// Only implement if the partner SDK provides its own list of error codes that can be mapped to Helium's.
     /// If some case cannot be mapped return `nil` to let Helium choose a default error code.
-    func mapSetUpError(_ error: Error) -> HeliumError.Code? {
+    func mapSetUpError(_ error: Error) -> ChartboostMediationError.Code? {
         guard let code = IASDKCoreInitErrorType(rawValue: (error as NSError).code) else {
             return nil
         }
