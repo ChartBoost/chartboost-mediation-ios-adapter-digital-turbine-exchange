@@ -82,7 +82,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         if (applies == true) {
             let gdprConsent = IAGDPRConsentType(chartboostStatus: status)
             IASDKCore.sharedInstance().gdprConsent = gdprConsent
-            log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent))
+            log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent.rawValue))
         }
     }
     
