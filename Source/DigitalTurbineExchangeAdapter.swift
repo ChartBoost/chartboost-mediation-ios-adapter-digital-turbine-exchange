@@ -78,9 +78,9 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// - parameter applies: `true` if GDPR applies, `false` if not, `nil` if the publisher has not provided this information.
     /// - parameter status: One of the `GDPRConsentStatus` values depending on the user's preference.
     func setGDPR(applies: Bool?, status: GDPRConsentStatus) {
+        // See https://developer.digitalturbine.com/hc/en-us/articles/360009940077-GDPR
         if (applies == true) {
-            let gdprConsent: IAGDPRConsentType = status == GDPRConsentStatus.granted ? .given : .denied
-            
+            let gdprConsent = IAGDPRConsentType(chartboostStatus: status)
             IASDKCore.sharedInstance().gdprConsent = gdprConsent
             log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent))
         }
@@ -96,6 +96,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// - parameter hasGivenConsent: A boolean indicating if the user has given consent.
     /// - parameter privacyString: An IAB-compliant string indicating the CCPA status.
     func setCCPA(hasGivenConsent: Bool, privacyString: String) {
+        // See https://developer.digitalturbine.com/hc/en-us/articles/360010026018-CCPA-Privacy-String
         IASDKCore.sharedInstance().ccpaString = privacyString
         log(.privacyUpdated(setting: "ccpaString", value: privacyString))
     }
@@ -148,4 +149,20 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
 private extension String {
     /// The key name for parsing the Fyber app ID.
     static let appIdKey = "fyber_app_id"
+}
+
+private extension IAGDPRConsentType {
+    /// Convenience init that maps Chartboost Mediation GDPR status to Digital Turbine Exchange GDPR status.
+    init(chartboostStatus: GDPRConsentStatus) {
+        switch chartboostStatus {
+        case .unknown:
+            self = .unknown
+        case .denied:
+            self = .denied
+        case .granted:
+            self = .given
+        @unknown default:
+            self = .unknown
+        }
+    }
 }
