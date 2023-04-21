@@ -6,12 +6,6 @@ Adapters are compatible with any Chartboost Mediation SDK version within that ma
 ### 4.8.2.1.0
 - This version of the adapters has been certified with Fyber_Marketplace_SDK 8.2.1.
 
-### 4.8.2.0.1
-- This version of the adapters has been certified with Fyber_Marketplace_SDK 8.2.0.
-
-### 4.8.2.0.0
-- This version of the adapters has been certified with Fyber_Marketplace_SDK 8.2.0.
-
 ### 4.8.1.9.0
 - This version of the adapters has been certified with Fyber_Marketplace_SDK 8.1.9.
 

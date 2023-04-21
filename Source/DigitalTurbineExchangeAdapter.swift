@@ -114,7 +114,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
             return DigitalTurbineExchangeAdapterFullscreenAd(adapter: self, request: request, delegate: delegate)
         case .banner:
             return DigitalTurbineExchangeAdapterBannerAd(adapter: self, request: request, delegate: delegate)
-        @unknown default:
+        default:
             throw error(.loadFailureUnsupportedAdFormat)
         }
     }
