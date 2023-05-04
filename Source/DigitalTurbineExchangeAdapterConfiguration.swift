@@ -10,9 +10,9 @@ import IASDKCore
 @objc public class DigitalTurbineExchangeAdapterConfiguration: NSObject {
     
     /// Flag that can optionally be set to change the log level of the Digital Turbine Exchange SDK.
-    @objc public static var logLevel: IALogLevel = .info {
+    @objc public static var logLevel: DTXLogLevel = .info {
         didSet {
-            IALogger.setLogLevel(logLevel)
+            DTXLogger.setLogLevel(logLevel)
             print("Digital Turbine Exchange SDK log level set to \(logLevel)")
         }
     }

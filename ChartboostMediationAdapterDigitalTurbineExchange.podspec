@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name        = 'ChartboostMediationAdapterDigitalTurbineExchange'
-  spec.version     = '4.8.1.9.0'
+  spec.version     = '4.8.2.1.0'
   spec.license     = { :type => 'MIT', :file => 'LICENSE.md' }
   spec.homepage    = 'https://github.com/ChartBoost/chartboost-mediation-ios-adapter-digital-turbine-exchange'
   spec.authors     = { 'Chartboost' => 'https://www.chartboost.com/' }
@@ -14,7 +14,7 @@ Pod::Spec.new do |spec|
 
   # Minimum supported versions
   spec.swift_version         = '5.0'
-  spec.ios.deployment_target = '10.0'
+  spec.ios.deployment_target = '11.0'
 
   # System frameworks used
   spec.ios.frameworks = ['Foundation', 'SafariServices', 'UIKit', 'WebKit']
@@ -23,7 +23,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'ChartboostMediationSDK', '~> 4.0'
 
   # Partner network SDK and version that this adapter is certified to work with.
-  spec.dependency 'Fyber_Marketplace_SDK', '8.1.9'
+  spec.dependency 'Fyber_Marketplace_SDK', '~> 8.2.1'
 
   # The partner network SDK is a static framework which requires the static_framework option.
   spec.static_framework = true
