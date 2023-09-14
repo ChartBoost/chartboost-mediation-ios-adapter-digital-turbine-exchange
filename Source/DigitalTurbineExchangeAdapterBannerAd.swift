@@ -59,7 +59,16 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
                 completion(.failure(error))
             } else {
                 self?.log(.loadSucceeded)
-                completion(.success([:]))
+
+                var partnerDetails: [String: String] = [:]
+                // The size of the loaded view appears to be available in the adView's
+                // intrinsicContentSize.
+                if let loadedSize = self?.viewUnitController?.adView?.intrinsicContentSize {
+                    partnerDetails["bannerWidth"] = "\(loadedSize.width)"
+                    partnerDetails["bannerHeight"] = "\(loadedSize.height)"
+                    partnerDetails["bannerType"] = "0" // Fixed banner
+                }
+                completion(.success(partnerDetails))
             }
         }
     }
