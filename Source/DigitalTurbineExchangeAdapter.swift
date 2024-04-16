@@ -111,7 +111,7 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         switch request.format {
         case PartnerAdFormats.interstitial, PartnerAdFormats.rewarded:
             return DigitalTurbineExchangeAdapterFullscreenAd(adapter: self, request: request, delegate: delegate)
-        case PartnerAdFormats.banner, PartnerAdFormats.adaptiveBanner:
+        case PartnerAdFormats.banner:
             return DigitalTurbineExchangeAdapterBannerAd(adapter: self, request: request, delegate: delegate)
         default:
             throw error(.loadFailureUnsupportedAdFormat)
