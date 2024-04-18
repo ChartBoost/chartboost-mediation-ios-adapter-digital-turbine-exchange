@@ -8,14 +8,12 @@ import Foundation
 import IASDKCore
 
 /// The Chartboost Mediation Digital Turbine Exchange adapter banner ad.
-final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAMRAIDContentDelegate {
-    /// The partner ad view to display inline. E.g. a banner view.
-    /// Should be nil for full-screen ads.
-    var inlineView: UIView? { viewUnitController?.adView }
-    
+final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerBannerAd, IAMRAIDContentDelegate {
+    /// The partner banner ad view to display.
+    var view: UIView? { viewUnitController?.adView }
+
     /// The loaded partner ad banner size.
-    /// Should be `nil` for full-screen ads.
-    var bannerSize: PartnerBannerSize?
+    var size: PartnerBannerSize?
 
     /// The Digital Turbine Exchange MRAID content controller.
     private var mraidContentController: IAMRAIDContentController?
@@ -67,7 +65,7 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
                 // The size of the loaded view appears to be available in the adView's
                 // intrinsicContentSize.
                 if let loadedSize = self?.viewUnitController?.adView?.intrinsicContentSize {
-                    self?.bannerSize = PartnerBannerSize(size: loadedSize, type: .fixed)
+                    self?.size = PartnerBannerSize(size: loadedSize, type: .fixed)
                 }
                 completion(.success([:]))
             }

@@ -9,15 +9,7 @@ import IASDKCore
 import UIKit
 
 /// The Chartboost Mediation Digital Turbine Exchange adapter interstitial ad.
-final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAVideoContentDelegate, IAMRAIDContentDelegate {
-    /// The partner ad view to display inline. E.g. a banner view.
-    /// Should be nil for full-screen ads.
-    internal var inlineView: UIView? { nil }
-
-    /// The loaded partner ad banner size.
-    /// Should be `nil` for full-screen ads.
-    var bannerSize: PartnerBannerSize? { nil }
-
+final class DigitalTurbineExchangeAdapterFullscreenAd: DigitalTurbineExchangeAdapterAd, PartnerFullscreenAd, IAVideoContentDelegate, IAMRAIDContentDelegate {
     /// The Digital Turbine Exchange fullscreen ad instance.
     private var fullscreenUnitController: IAFullscreenUnitController?
     
