@@ -8,14 +8,12 @@ import Foundation
 import IASDKCore
 
 /// The Chartboost Mediation Digital Turbine Exchange adapter banner ad.
-final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerAd, IAMRAIDContentDelegate {
-    /// The partner ad view to display inline. E.g. a banner view.
-    /// Should be nil for full-screen ads.
-    var inlineView: UIView? { viewUnitController?.adView }
-    
+final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapterAd, PartnerBannerAd, IAMRAIDContentDelegate {
+    /// The partner banner ad view to display.
+    var view: UIView? { viewUnitController?.adView }
+
     /// The loaded partner ad banner size.
-    /// Should be `nil` for full-screen ads.
-    var bannerSize: PartnerBannerSize?
+    var size: PartnerBannerSize?
 
     /// The Digital Turbine Exchange MRAID content controller.
     private var mraidContentController: IAMRAIDContentController?
@@ -67,21 +65,13 @@ final class DigitalTurbineExchangeAdapterBannerAd: DigitalTurbineExchangeAdapter
                 // The size of the loaded view appears to be available in the adView's
                 // intrinsicContentSize.
                 if let loadedSize = self?.viewUnitController?.adView?.intrinsicContentSize {
-                    self?.bannerSize = PartnerBannerSize(size: loadedSize, type: .fixed)
+                    self?.size = PartnerBannerSize(size: loadedSize, type: .fixed)
                 }
                 completion(.success([:]))
             }
         }
     }
-    
-    /// Shows a loaded ad.
-    /// It will never get called for banner ads. You may leave the implementation blank for that ad format.
-    /// - parameter viewController: The view controller on which the ad will be presented on.
-    /// - parameter completion: Closure to be performed once the ad has been shown.
-    func show(with viewController: UIViewController, completion: @escaping (Result<PartnerDetails, Error>) -> Void) {
-        /// NO-OP
-    }
-    
+
     /// Build a partner ad request.
     /// - Parameter placement: The placement ID for the ad request.
     /// - Returns: A partner ad request for the current Chartboost Mediation ad load.
