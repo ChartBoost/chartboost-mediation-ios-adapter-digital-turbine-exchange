@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name        = 'ChartboostMediationAdapterDigitalTurbineExchange'
-  spec.version     = '4.8.2.1.1'
+  spec.version     = '5.8.2.1.1'
   spec.license     = { :type => 'MIT', :file => 'LICENSE.md' }
   spec.homepage    = 'https://github.com/ChartBoost/chartboost-mediation-ios-adapter-digital-turbine-exchange'
   spec.authors     = { 'Chartboost' => 'https://www.chartboost.com/' }
@@ -20,8 +20,8 @@ Pod::Spec.new do |spec|
   # System frameworks used
   spec.ios.frameworks = ['Foundation', 'SafariServices', 'UIKit', 'WebKit']
   
-  # This adapter is compatible with all Chartboost Mediation 4.X versions of the SDK.
-  spec.dependency 'ChartboostMediationSDK', '~> 4.0'
+  # This adapter is compatible with all Chartboost Mediation 5.X versions of the SDK.
+  spec.dependency 'ChartboostMediationSDK', '~> 5.0'
 
   # Partner network SDK and version that this adapter is certified to work with.
   spec.dependency 'Fyber_Marketplace_SDK', '~> 8.2.1'
