@@ -44,6 +44,10 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
             return
         }
         
+        // Apply initial consents
+        setConsents(configuration.consents, modifiedKeys: Set(configuration.consents.keys))
+        setIsUserUnderage(configuration.isUserUnderage)
+
         /// Digital Turbine Exchange's initialization needs to be done on the main thread
         DispatchQueue.main.async {
             IASDKCore.sharedInstance().initWithAppID(appId, completionBlock: { succeeded, error in
