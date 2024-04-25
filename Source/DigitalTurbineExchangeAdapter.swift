@@ -52,6 +52,10 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
             return
         }
         
+        // Apply initial consents
+        setConsents(configuration.consents, modifiedKeys: Set(configuration.consents.keys))
+        setIsUserUnderage(configuration.isUserUnderage)
+
         /// Digital Turbine Exchange's initialization needs to be done on the main thread
         DispatchQueue.main.async {
             IASDKCore.sharedInstance().initWithAppID(appId, completionBlock: { succeeded, error in
@@ -80,32 +84,44 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
         completion(.success([:]))
     }
     
-    /// Indicates if GDPR applies or not and the user's GDPR consent status.
-    /// - parameter applies: `true` if GDPR applies, `false` if not, `nil` if the publisher has not provided this information.
-    /// - parameter status: One of the `GDPRConsentStatus` values depending on the user's preference.
-    func setGDPR(applies: Bool?, status: GDPRConsentStatus) {
+    /// Indicates that the user consent has changed.
+    /// - parameter consents: The new consents value, including both modified and unmodified consents.
+    /// - parameter modifiedKeys: A set containing all the keys that changed.
+    func setConsents(_ consents: [ConsentKey: ConsentValue], modifiedKeys: Set<ConsentKey>) {
         // See https://developer.digitalturbine.com/hc/en-us/articles/360009940077-GDPR
-        if (applies == true) {
-            let gdprConsent = IAGDPRConsentType(chartboostStatus: status)
+        if modifiedKeys.contains(partnerID) || modifiedKeys.contains(ConsentKeys.gdprConsentGiven) {
+            let consent = consents[partnerID] ?? consents[ConsentKeys.gdprConsentGiven]
+            let gdprConsent: IAGDPRConsentType
+            switch consent {
+            case ConsentValues.granted: gdprConsent = .given
+            case ConsentValues.denied: gdprConsent = .denied
+            default: gdprConsent = .unknown
+
+            }
             IASDKCore.sharedInstance().gdprConsent = gdprConsent
             log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent.rawValue))
         }
-    }
-    
-    /// Indicates if the user is subject to COPPA or not.
-    /// - parameter isChildDirected: `true` if the user is subject to COPPA, `false` otherwise.
-    func setCOPPA(isChildDirected: Bool) {
-        /// NO-OP
-    }
-    
-    /// Indicates the CCPA status both as a boolean and as an IAB US privacy string.
-    /// - parameter hasGivenConsent: A boolean indicating if the user has given consent.
-    /// - parameter privacyString: An IAB-compliant string indicating the CCPA status.
-    func setCCPA(hasGivenConsent: Bool, privacyString: String) {
+
+        if modifiedKeys.contains(ConsentKeys.tcf) {
+            let tcfString = consents[ConsentKeys.tcf]
+            IASDKCore.sharedInstance().gdprConsentString = tcfString
+            log(.privacyUpdated(setting: "gdprConsentString", value: tcfString))
+        }
+
         // See https://developer.digitalturbine.com/hc/en-us/articles/360010026018-CCPA-Privacy-String
-        IASDKCore.sharedInstance().ccpaString = privacyString
-        log(.privacyUpdated(setting: "ccpaString", value: privacyString))
+        if modifiedKeys.contains(ConsentKeys.usp) {
+            let privacyString = consents[ConsentKeys.usp]
+            IASDKCore.sharedInstance().ccpaString = privacyString
+            log(.privacyUpdated(setting: "ccpaString", value: privacyString))
+        }
     }
+
+    /// Indicates that the user is underage signal has changed.
+    /// - parameter isUserUnderage: `true` if the user is underage as determined by the publisher, `false` otherwise.
+    func setIsUserUnderage(_ isUserUnderage: Bool) {
+        // NO-OP
+    }
+
     
     /// Creates a new banner ad object in charge of communicating with a single partner SDK ad instance.
     /// Chartboost Mediation SDK calls this method to create a new ad for each new load request. Ad instances are never reused.
@@ -169,20 +185,4 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
 private extension String {
     /// The key name for parsing the Fyber app ID.
     static let appIdKey = "fyber_app_id"
-}
-
-private extension IAGDPRConsentType {
-    /// Convenience init that maps Chartboost Mediation GDPR status to Digital Turbine Exchange GDPR status.
-    init(chartboostStatus: GDPRConsentStatus) {
-        switch chartboostStatus {
-        case .unknown:
-            self = .unknown
-        case .denied:
-            self = .denied
-        case .granted:
-            self = .given
-        @unknown default:
-            self = .unknown
-        }
-    }
 }
