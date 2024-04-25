@@ -28,13 +28,22 @@ import os.log
 
     private static let log = OSLog(subsystem: "com.chartboost.mediation.adapter.fyber", category: "Configuration")
 
+    /// Flag that can optionally be set to disable audio for the Digital Turbine Exchange SDK.
+    @objc public static var muteAudio: Bool {
+        get {
+            IASDKCore.sharedInstance().muteAudio
+        }
+        set {
+            IASDKCore.sharedInstance().muteAudio = newValue
+            os_log(.debug, log: log, "Digital Turbine Exchange SDK mute audio set to %{public}s", "\(newValue)")
+        }
+    }
+
     /// Flag that can optionally be set to change the log level of the Digital Turbine Exchange SDK.
     @objc public static var logLevel: DTXLogLevel = .info {
         didSet {
             DTXLogger.setLogLevel(logLevel)
-            if #available(iOS 12.0, *) {
-                os_log(.debug, log: log, "Digital Turbine Exchange SDK log level set to %{public}s", "\(logLevel)")
-            }
+            os_log(.debug, log: log, "Digital Turbine Exchange SDK log level set to %{public}s", "\(logLevel)")
         }
     }
 }
