@@ -11,19 +11,27 @@ import UIKit
 /// The Chartboost Mediation Digital Turbine Exchange adapter
 final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// The version of the partner SDK.
-    let partnerSDKVersion = IASDKCore.sharedInstance().version() ?? ""
-    
+    var partnerSDKVersion: String {
+        DigitalTurbineExchangeAdapterConfiguration.partnerSDKVersion
+    }
+
     /// The version of the adapter.
     /// It should have either 5 or 6 digits separated by periods, where the first digit is Chartboost Mediation SDK's major version, the last digit is the adapter's build version, and intermediate digits are the partner SDK's version.
     /// Format: `<Chartboost Mediation major version>.<Partner major version>.<Partner minor version>.<Partner patch version>.<Partner build version>.<Adapter build version>` where `.<Partner build version>` is optional.
-    let adapterVersion = "4.8.2.1.1"
-    
+    var adapterVersion: String {
+        DigitalTurbineExchangeAdapterConfiguration.adapterVersion
+    }
+
     /// The partner's unique identifier.
-    let partnerID = "fyber"
-    
+    var partnerID: String {
+        DigitalTurbineExchangeAdapterConfiguration.partnerID
+    }
+
     /// The human-friendly partner name.
-    let partnerDisplayName = "Digital Turbine Exchange"
-    
+    var partnerDisplayName: String {
+        DigitalTurbineExchangeAdapterConfiguration.partnerDisplayName
+    }
+
     /// The designated initializer for the adapter.
     /// Chartboost Mediation SDK will use this constructor to create instances of conforming types.
     /// - parameter storage: An object that exposes storage managed by the Chartboost Mediation SDK to the adapter.
