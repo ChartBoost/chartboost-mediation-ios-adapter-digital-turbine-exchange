@@ -3,12 +3,12 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
+import ChartboostMediationSDK
 import Foundation
 import IASDKCore
-import os.log
 
 /// A list of externally configurable properties pertaining to the partner SDK that can be retrieved and set by publishers.
-@objc public class DigitalTurbineExchangeAdapterConfiguration: NSObject {
+@objc public class DigitalTurbineExchangeAdapterConfiguration: NSObject, PartnerAdapterConfiguration {
 
     /// The version of the partner SDK.
     @objc public static var partnerSDKVersion: String {
@@ -26,8 +26,6 @@ import os.log
     /// The human-friendly partner name.
     @objc public static let partnerDisplayName = "Digital Turbine Exchange"
 
-    private static let log = OSLog(subsystem: "com.chartboost.mediation.adapter.fyber", category: "Configuration")
-
     /// Flag that can optionally be set to disable audio for the Digital Turbine Exchange SDK.
     @objc public static var muteAudio: Bool {
         get {
@@ -35,7 +33,7 @@ import os.log
         }
         set {
             IASDKCore.sharedInstance().muteAudio = newValue
-            os_log(.debug, log: log, "Digital Turbine Exchange SDK mute audio set to %{public}s", "\(newValue)")
+            log("Mute audio set to \(newValue)")
         }
     }
 
@@ -43,7 +41,7 @@ import os.log
     @objc public static var logLevel: DTXLogLevel = .info {
         didSet {
             DTXLogger.setLogLevel(logLevel)
-            os_log(.debug, log: log, "Digital Turbine Exchange SDK log level set to %{public}s", "\(logLevel)")
+            log("Log level set to \(logLevel)")
         }
     }
 }
