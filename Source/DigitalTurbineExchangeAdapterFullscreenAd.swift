@@ -1,4 +1,4 @@
-// Copyright 2022-2024 Chartboost, Inc.
+// Copyright 2022-2025 Chartboost, Inc.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -13,8 +13,7 @@ final class DigitalTurbineExchangeAdapterFullscreenAd:
     DigitalTurbineExchangeAdapterAd,
     PartnerFullscreenAd,
     IAVideoContentDelegate,
-    IAMRAIDContentDelegate
-{
+    IAMRAIDContentDelegate {
     /// The Digital Turbine Exchange fullscreen ad instance.
     private var fullscreenUnitController: IAFullscreenUnitController?
 
@@ -130,7 +129,6 @@ final class DigitalTurbineExchangeAdapterFullscreenAd:
     /// - Returns: A partner ad request for the current Chartboost Mediation ad load.
     private func buildAdRequest(placement: String) -> IAAdRequest? {
         IAAdRequest.build { builder in
-            builder.useSecureConnections = false
             builder.spotID = placement
             builder.timeout = 30
         }

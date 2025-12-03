@@ -1,4 +1,4 @@
-// Copyright 2022-2024 Chartboost, Inc.
+// Copyright 2022-2025 Chartboost, Inc.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -51,8 +51,7 @@ class DigitalTurbineExchangeAdapterAd: NSObject, IAUnitDelegate {
             // (This shouldn't happen, a view controller should always provided by mediation on show).
             if let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first,
                let keyWindow = windowScene.windows.first,
-               let rootViewController = keyWindow.rootViewController
-            {
+               let rootViewController = keyWindow.rootViewController {
                 var topController = rootViewController
                 while let presentedViewController = topController.presentedViewController {
                     topController = presentedViewController
