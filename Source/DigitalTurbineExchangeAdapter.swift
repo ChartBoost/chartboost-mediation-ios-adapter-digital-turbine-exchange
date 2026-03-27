@@ -1,4 +1,4 @@
-// Copyright 2022-2025 Chartboost, Inc.
+// Copyright 2022-2026 Chartboost, Inc.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -73,30 +73,33 @@ final class DigitalTurbineExchangeAdapter: PartnerAdapter {
     /// - parameter consents: The new consents value, including both modified and unmodified consents.
     /// - parameter modifiedKeys: A set containing all the keys that changed.
     func setConsents(_ consents: [ConsentKey: ConsentValue], modifiedKeys: Set<ConsentKey>) {
-        // See https://developer.digitalturbine.com/hc/en-us/articles/360009940077-GDPR
-        if modifiedKeys.contains(configuration.partnerID) || modifiedKeys.contains(ConsentKeys.gdprConsentGiven) {
-            let consent = consents[configuration.partnerID] ?? consents[ConsentKeys.gdprConsentGiven]
-            let gdprConsent: IAGDPRConsentType
-            switch consent {
-            case ConsentValues.granted: gdprConsent = .given
-            case ConsentValues.denied: gdprConsent = .denied
-            default: gdprConsent = .unknown
+        // IASDKCore.sharedInstance() must be accessed on the main thread
+        DispatchQueue.main.async { [self] in
+            // See https://developer.digitalturbine.com/hc/en-us/articles/360009940077-GDPR
+            if modifiedKeys.contains(configuration.partnerID) || modifiedKeys.contains(ConsentKeys.gdprConsentGiven) {
+                let consent = consents[configuration.partnerID] ?? consents[ConsentKeys.gdprConsentGiven]
+                let gdprConsent: IAGDPRConsentType
+                switch consent {
+                case ConsentValues.granted: gdprConsent = .given
+                case ConsentValues.denied: gdprConsent = .denied
+                default: gdprConsent = .unknown
+                }
+                IASDKCore.sharedInstance().gdprConsent = gdprConsent
+                log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent.rawValue))
             }
-            IASDKCore.sharedInstance().gdprConsent = gdprConsent
-            log(.privacyUpdated(setting: "gdprConsent", value: gdprConsent.rawValue))
-        }
 
-        if modifiedKeys.contains(ConsentKeys.tcf) {
-            let tcfString = consents[ConsentKeys.tcf]
-            IASDKCore.sharedInstance().gdprConsentString = tcfString
-            log(.privacyUpdated(setting: "gdprConsentString", value: tcfString))
-        }
+            if modifiedKeys.contains(ConsentKeys.tcf) {
+                let tcfString = consents[ConsentKeys.tcf]
+                IASDKCore.sharedInstance().gdprConsentString = tcfString
+                log(.privacyUpdated(setting: "gdprConsentString", value: tcfString))
+            }
 
-        // See https://developer.digitalturbine.com/hc/en-us/articles/360010026018-CCPA-Privacy-String
-        if modifiedKeys.contains(ConsentKeys.usp) {
-            let privacyString = consents[ConsentKeys.usp]
-            IASDKCore.sharedInstance().ccpaString = privacyString
-            log(.privacyUpdated(setting: "ccpaString", value: privacyString))
+            // See https://developer.digitalturbine.com/hc/en-us/articles/360010026018-CCPA-Privacy-String
+            if modifiedKeys.contains(ConsentKeys.usp) {
+                let privacyString = consents[ConsentKeys.usp]
+                IASDKCore.sharedInstance().ccpaString = privacyString
+                log(.privacyUpdated(setting: "ccpaString", value: privacyString))
+            }
         }
     }
 

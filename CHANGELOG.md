@@ -11,6 +11,10 @@ All official releases can be found on this repository's [releases page](https://
 
 ## Mediation 5
 
+### 5.8.4.0.1
+- This version of the adapter has been certified with Fyber_Marketplace_SDK 8.4.0.
+- All IASDKCore.sharedInstance() access points now run on the main thread since IASDKCore.sharedInstance() creates a WKProcessPool on first access, which must happen on the main thread.
+
 ### 5.8.4.0.0
 - This version of the adapter has been certified with Fyber_Marketplace_SDK 8.4.0.
 
