@@ -1,4 +1,4 @@
-// Copyright 2022-2025 Chartboost, Inc.
+// Copyright 2022-2026 Chartboost, Inc.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -11,7 +11,14 @@ import IASDKCore
 @objc public class DigitalTurbineExchangeAdapterConfiguration: NSObject, PartnerAdapterConfiguration {
     /// The version of the partner SDK.
     @objc public static var partnerSDKVersion: String {
-        IASDKCore.sharedInstance().version() ?? ""
+        // IASDKCore.sharedInstance() creates a WKProcessPool on first access, which requires the main thread
+        if Thread.isMainThread {
+            return IASDKCore.sharedInstance().version() ?? ""
+        } else {
+            return DispatchQueue.main.sync {
+                IASDKCore.sharedInstance().version() ?? ""
+            }
+        }
     }
 
     /// The version of the adapter.
@@ -19,7 +26,7 @@ import IASDKCore
     /// last digit is the adapter's build version, and intermediate digits are the partner SDK's version.
     /// Format: `<Chartboost Mediation major version>.<Partner major version>.<Partner minor version>.<Partner patch version>.
     /// <Partner build version>.<Adapter build version>` where `.<Partner build version>` is optional.
-    @objc public static let adapterVersion = "5.8.4.0.0"
+    @objc public static let adapterVersion = "5.8.4.0.1"
 
     /// The partner's unique identifier.
     @objc public static let partnerID = "fyber"
@@ -30,11 +37,19 @@ import IASDKCore
     /// Flag that can optionally be set to disable audio for the Digital Turbine Exchange SDK.
     @objc public static var muteAudio: Bool {
         get {
-            IASDKCore.sharedInstance().muteAudio
+            if Thread.isMainThread {
+                return IASDKCore.sharedInstance().muteAudio
+            } else {
+                return DispatchQueue.main.sync {
+                    IASDKCore.sharedInstance().muteAudio
+                }
+            }
         }
         set {
-            IASDKCore.sharedInstance().muteAudio = newValue
-            log("Mute audio set to \(newValue)")
+            DispatchQueue.main.async {
+                IASDKCore.sharedInstance().muteAudio = newValue
+                log("Mute audio set to \(newValue)")
+            }
         }
     }
 
