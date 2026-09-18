@@ -8,7 +8,7 @@ The Chartboost Mediation Digital Turbine Exchange adapter mediates Digital Turbi
 | ------ | ------ |
 | Chartboost Mediation SDK | 5.0.0+ |
 | Cocoapods | 1.11.3+ |
-| iOS | 13.0+ |
+| iOS | 15.0+ |
 | Xcode | 15.0+ |
 
 ## Integration
